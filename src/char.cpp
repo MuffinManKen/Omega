@@ -487,6 +487,12 @@ void omegan_character_stats()
     enable_attr(menu_window, A_NORMAL);
     mvwaddstr(menu_window, 10, 0, "Press ENTER to confirm");
 
+    // Update the right-side panel so derived stats (HP, MP, combat) are
+    // visible while the player allocates stat points.
+    dataprint();
+    print_combat_stats();
+    showflags();
+
     switch(wgetch(menu_window))
     {
       case KEY_ENTER:

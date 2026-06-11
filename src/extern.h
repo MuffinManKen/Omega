@@ -745,6 +745,7 @@ void l_trap_teleport();
 // util.cpp functions
 long calc_points();
 const std::string getarticle(const std::string &);
+const std::string month();
 const std::string ordinal(int);
 bool confirmation();
 char cryptkey(const std::string &);

@@ -1,0 +1,5 @@
+[gd_resource type="SystemFont" format=3 uid="uid://jwqbwg622omb"]
+
+[resource]
+font_names = PackedStringArray("Consolas", "Monospace")
+generate_mipmaps = true

@@ -1,0 +1,36 @@
+[gd_resource type="Theme" format=3 uid="uid://qarnl7rs46s6"]
+
+[ext_resource type="SystemFont" uid="uid://jwqbwg622omb" path="res://default_font.tres" id="1_e7bfs"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bp0wp"]
+bg_color = Color(0.16565639, 0.16565642, 0.1656563, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e7bfs"]
+bg_color = Color(0, 0.4392157, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3taad"]
+bg_color = Color(0, 0, 0.6, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+
+[resource]
+HealthBar/base_type = &"ProgressBar"
+HealthBar/font_sizes/font_size = 14
+HealthBar/fonts/font = ExtResource("1_e7bfs")
+HealthBar/styles/background = SubResource("StyleBoxFlat_bp0wp")
+HealthBar/styles/fill = SubResource("StyleBoxFlat_e7bfs")
+ManaBar/base_type = &"HealthBar"
+ManaBar/styles/fill = SubResource("StyleBoxFlat_3taad")
+StatsLabel/base_type = &"Label"
+StatsLabel/font_sizes/font_size = 18
+StatsLabel/fonts/font = ExtResource("1_e7bfs")

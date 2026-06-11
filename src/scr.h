@@ -17,10 +17,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "defs.h"
+#include "omega_curses.h"
 
 #include <array>
 #include <string>
-#include <curses.h>
 
 // Some curses implementations don't define BUTTON5 constants
 #ifndef BUTTON5_PRESSED
@@ -113,6 +113,7 @@ void hide_line(int);
 void initgraf();
 void levelrefresh();
 void lightspot(int, int);
+std::string hunger_string();
 void locprint(const std::string &);
 void maddch(char);
 void menuaddch(char);
@@ -144,5 +145,6 @@ void shrink_message_window();
 void spreadroomdark(int, int, int);
 void spreadroomlight(int, int, int);
 void timeprint();
+void omega_title();
 void title();
 void xredraw();

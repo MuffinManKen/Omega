@@ -1,0 +1,140 @@
+[gd_scene format=3 uid="uid://gcli70irulyx"]
+
+[ext_resource type="Script" uid="uid://bti6evfv7dhfn" path="res://scripts/Main.gd" id="1"]
+[ext_resource type="Script" uid="uid://7hg4ffqwubx0" path="res://scenes/player_info_container.gd" id="2_rvslj"]
+
+[node name="Main" type="Node2D" unique_id=1988683040]
+script = ExtResource("1")
+
+[node name="OmegaGame" type="OmegaGame" parent="." unique_id=1340887216]
+
+[node name="ScreenBounds" type="Control" parent="." unique_id=363257913]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="PlayerInfoContainer" type="PanelContainer" parent="ScreenBounds" unique_id=964501367]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -251.0
+offset_top = 4.0
+offset_right = -7.0
+offset_bottom = 241.0
+grow_horizontal = 0
+script = ExtResource("2_rvslj")
+
+[node name="GridContainer" type="GridContainer" parent="ScreenBounds/PlayerInfoContainer" unique_id=1933497835]
+layout_mode = 2
+theme_override_constants/h_separation = 25
+columns = 2
+
+[node name="NameTitleLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=1036212408]
+custom_minimum_size = Vector2(120, 30)
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+text = "Ken, Neophyte"
+
+[node name="ClockLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=678112996]
+custom_minimum_size = Vector2(120, 30)
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+text = "12:00 PM"
+
+[node name="HealthLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=760843712]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="HealthBar" type="ProgressBar" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=56079975]
+layout_mode = 2
+theme_type_variation = &"HealthBar"
+step = 1.0
+
+[node name="ManaLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=1455935370]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="ManaBar" type="ProgressBar" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=1721114408]
+layout_mode = 2
+theme_type_variation = &"ManaBar"
+step = 1.0
+
+[node name="StrengthLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=609245854]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="HitLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=1467009046]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="DexterityLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=2090505978]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="DamageLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=1840886243]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="ConstitutionLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=232339639]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="DefenseLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=1777514846]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="AgilityLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=1692533898]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="ArmorLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=730141772]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="IntelligenceLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=1452778534]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="SpeedLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=659863995]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="PowerLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=2052656339]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="LevelLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=2063687798]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="GoldLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=669972085]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+
+[node name="CarryLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=2084803502]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+autowrap_trim_flags = 0
+
+[node name="HungerLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=1899750153]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+autowrap_trim_flags = 0
+
+[node name="PoisonLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=1010815990]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+autowrap_trim_flags = 0
+
+[node name="DiseaseLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=2091365002]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+autowrap_trim_flags = 0
+
+[node name="MovementLabel" type="Label" parent="ScreenBounds/PlayerInfoContainer/GridContainer" unique_id=563480431]
+layout_mode = 2
+theme_type_variation = &"StatsLabel"
+autowrap_trim_flags = 0

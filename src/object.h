@@ -19,7 +19,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #ifndef OMEGA_OBJECT_H_
 #define OMEGA_OBJECT_H_
 
-#include "curses.h"
+#include "omega_curses.h"
 
 #include <string>
 

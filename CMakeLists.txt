@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(Omega)
 
+option(BUILD_GDEXTENSION "Build Godot 4 GDExtension (requires godot-cpp submodule)" OFF)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -67,7 +69,15 @@ if(WIN32)
   link_directories(${CMAKE_BINARY_DIR}/installed/Release/lib/${PDC_WINDOW_TYPE})
 endif()
 
-add_executable(omega
+# ---------------------------------------------------------------------------
+# omega-core: game logic shared between the standalone executable and the
+# Godot GDExtension. Excludes omega.cpp (main + globals), scr.cpp (curses
+# rendering), and interactive_menu.cpp (curses UI). The latter two will be
+# replaced by scr_godot.cpp and Godot scenes in the GDExtension build.
+# ---------------------------------------------------------------------------
+add_library(omega-core STATIC
+  src/game_session.cpp
+  src/globals.cpp
   src/abyss.cpp
   src/aux1.cpp
   src/aux2.cpp
@@ -91,7 +101,6 @@ add_executable(omega
   src/guild2.cpp
   src/house.cpp
   src/iinit.cpp
-  src/interactive_menu.cpp
   src/inv.cpp
   src/item.cpp
   src/itemf1.cpp
@@ -107,10 +116,8 @@ add_executable(omega
   src/mspec.cpp
   src/mstrike.cpp
   src/mtalk.cpp
-  src/omega.cpp
   src/priest.cpp
   src/save.cpp
-  src/scr.cpp
   src/scrolling_buffer.cpp
   src/site1.cpp
   src/site2.cpp
@@ -120,6 +127,17 @@ add_executable(omega
   src/util.cpp
   src/village.cpp
 )
+target_include_directories(omega-core PUBLIC src)
+
+# ---------------------------------------------------------------------------
+# Standalone executable (curses-based, existing build)
+# ---------------------------------------------------------------------------
+add_executable(omega
+  src/omega.cpp
+  src/interactive_menu.cpp
+  src/scr.cpp
+)
+target_link_libraries(omega PRIVATE omega-core)
 
 add_custom_command(
   TARGET omega POST_BUILD
@@ -173,11 +191,105 @@ if(WIN32)
       msvcrtd
     )
   endif()
-  target_link_libraries(omega
+  target_link_libraries(omega PRIVATE
     $<$<CONFIG:Debug>:${DEBUG_LIBS}>
     $<$<CONFIG:Release>:${RELEASE_LIBS}>
   )
 else()
   find_package(Curses REQUIRED)
   target_link_libraries(omega PRIVATE ${CURSES_LIBRARIES})
+endif()
+
+# ---------------------------------------------------------------------------
+# Godot 4 GDExtension (opt-in: cmake -DBUILD_GDEXTENSION=ON)
+# Requires: git submodule add https://github.com/godotengine/godot-cpp godot-cpp
+#
+# Core sources are compiled directly into the GDExtension target with
+# OMEGA_CURSES_STUB defined, so omega-core (standalone) is unaffected.
+# ---------------------------------------------------------------------------
+if(BUILD_GDEXTENSION)
+  add_subdirectory(godot-cpp)
+
+  add_library(omega-gdextension SHARED
+    # GDExtension-specific files
+    src/gdextension_entry.cpp
+    src/OmegaGame.cpp
+    src/scr_godot.cpp
+    src/curses_stub.cpp
+    # Core game logic compiled again with OMEGA_CURSES_STUB
+    src/game_session.cpp
+    src/globals.cpp
+    src/abyss.cpp
+    src/aux1.cpp
+    src/aux2.cpp
+    src/aux3.cpp
+    src/char.cpp
+    src/city.cpp
+    src/clrgen.cpp
+    src/command1.cpp
+    src/command2.cpp
+    src/command3.cpp
+    src/country.cpp
+    src/effect1.cpp
+    src/effect2.cpp
+    src/effect3.cpp
+    src/env.cpp
+    src/etc.cpp
+    src/file.cpp
+    src/gen1.cpp
+    src/gen2.cpp
+    src/guild1.cpp
+    src/guild2.cpp
+    src/house.cpp
+    src/iinit.cpp
+    src/inv.cpp
+    src/item.cpp
+    src/itemf1.cpp
+    src/itemf2.cpp
+    src/itemf3.cpp
+    src/lev.cpp
+    src/mmelee.cpp
+    src/mmove.cpp
+    src/mon.cpp
+    src/monster.cpp
+    src/move.cpp
+    src/movef.cpp
+    src/mspec.cpp
+    src/mstrike.cpp
+    src/mtalk.cpp
+    src/priest.cpp
+    src/save.cpp
+    src/scrolling_buffer.cpp
+    src/site1.cpp
+    src/site2.cpp
+    src/spell.cpp
+    src/time.cpp
+    src/trap.cpp
+    src/util.cpp
+    src/village.cpp
+  )
+
+  target_compile_definitions(omega-gdextension PRIVATE OMEGA_CURSES_STUB)
+  target_include_directories(omega-gdextension PRIVATE src)
+
+  set_target_properties(omega-gdextension PROPERTIES
+    PREFIX ""
+    OUTPUT_NAME "omega"
+  )
+
+  target_link_libraries(omega-gdextension PRIVATE godot-cpp)
+
+  # Copy build outputs into the Godot project so it's always up to date.
+  add_custom_command(
+    TARGET omega-gdextension POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+      "${CMAKE_SOURCE_DIR}/godot-project/bin"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      $<TARGET_FILE:omega-gdextension>
+      "${CMAKE_SOURCE_DIR}/godot-project/bin/omega.dll"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+      "${CMAKE_SOURCE_DIR}/lib"
+      "${CMAKE_SOURCE_DIR}/godot-project/lib"
+    COMMENT "Copying omega.dll and lib/ -> godot-project/"
+  )
 endif()

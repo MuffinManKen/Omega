@@ -1,0 +1,54 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "gdext-release",
+      "displayName": "GDExtension Release (VS2022, NMake)",
+      "description": "Builds omega.dll for the Godot 4 port. Must be run from a VS2022 x64 Developer Command Prompt — godot-cpp was compiled with MSVC 14.44 and is not compatible with later toolchains.",
+      "generator": "NMake Makefiles",
+      "binaryDir": "${sourceDir}/build_gdext",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "PDC_GL_BUILD": "OFF",
+        "BUILD_GDEXTENSION": "ON"
+      }
+    },
+    {
+      "name": "standalone-release",
+      "displayName": "Standalone Release (MSVC, NMake)",
+      "description": "Builds the terminal/OpenGL standalone executable. Must be run from a VS x64 Developer Command Prompt.",
+      "generator": "NMake Makefiles",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "PDC_GL_BUILD": "OFF"
+      }
+    },
+    {
+      "name": "standalone-release-gl",
+      "displayName": "Standalone Release OpenGL (MSVC, NMake)",
+      "description": "Builds the standalone executable with SDL2/OpenGL rendering.",
+      "generator": "NMake Makefiles",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "PDC_GL_BUILD": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "gdext-release",
+      "configurePreset": "gdext-release",
+      "targets": ["omega-gdextension"]
+    },
+    {
+      "name": "standalone-release",
+      "configurePreset": "standalone-release"
+    },
+    {
+      "name": "standalone-release-gl",
+      "configurePreset": "standalone-release-gl"
+    }
+  ]
+}
