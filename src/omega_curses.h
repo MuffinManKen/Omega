@@ -1,4 +1,5 @@
-#pragma once
+#ifndef OMEGA_CURSES_H_
+#define OMEGA_CURSES_H_
 
 // Single point of indirection for the curses API. Alternative front-ends
 // (e.g. a graphical port) define OMEGA_CURSES_STUB and supply curses_stub.h,
@@ -10,3 +11,5 @@
 #else
 #  include <curses.h>
 #endif
+
+#endif // OMEGA_CURSES_H_
