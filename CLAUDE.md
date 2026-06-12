@@ -151,7 +151,7 @@ Shutdown: `NOTIFICATION_EXIT_TREE` calls `InputQueue::shutdown()` → throws `Sh
 #### Key files
 | File | Purpose |
 |------|---------|
-| `src/OmegaGame.h/cpp` | Godot Node class; exposes `provide_input`, `get_tile_data`, `is_dirty`, `get_player_pos`, `get_buffer_width/height` |
+| `src/OmegaGame.h/cpp` | Godot Node class; exposes input (`provide_input`), tile buffer (`get_tile_data`, `is_dirty`), HUD panel (`get_panel_*`), per-layer snapshot (`get_terrain_data`, `get_terrain_aux_data`, `get_item_data`, `get_creature_data`, `get_cell_flags`, `is_snapshot_dirty`), `get_player`, `get_time`, `get_game_phase`, plus `LevelTerrain`/`CountryTerrain`/`ItemGlyph` enums (chtype values from defs.h) and `STATUS_*`/`PHASE_*` constants. **Include order in OmegaGame.h is load-bearing** — godot headers before defs.h (curses `KEY_*` macros vs godot enum members); see the clang-format off block. |
 | `src/render_buffer.hpp` | `TileBuffer` struct (120×64, mutex + atomic dirty flag); `tile_buffer()` singleton |
 | `src/scr_godot.cpp` | Full implementation of `scr.h` for the GDExtension: tile writes, input routing, color markup parsing |
 | `src/curses_stub.h/cpp` | Defines curses types/constants and stubs all curses functions; text output routes to `TileBuffer`; `wgetch`/`getch` route to `InputQueue` |

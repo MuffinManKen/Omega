@@ -16,7 +16,11 @@ struct CellSnapshot
   static constexpr uint8_t FLAG_IN_LOS = 0x02; // cell is currently visible
 
   chtype  terrain_char  = 0; // site[x][y].locchar (WALL for SECRET cells)
-  int     terrain_aux   = 0; // site[x][y].aux (deity for altars, etc.)
+  int     terrain_aux   = 0; // site[x][y].aux — meaning depends on the site type: deity id for
+                             // altars, lock state for closed doors (UNLOCKED=0/BURGLED=2/LOCKED=3),
+                             // destination depth for stairs. For most cells it is leftover noise:
+                             // clear_level() defaults every cell to difficulty()*20 and city sites
+                             // set it to 1. Renderers should ignore it except for known site types.
   chtype  item_char     = 0; // top item objchar, PILE if >1, 0 if none/hidden
   chtype  creature_char = 0; // creature->monchar if visible, 0 otherwise
   uint8_t flags         = 0;
