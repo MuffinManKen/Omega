@@ -30,6 +30,7 @@ window/stretch/aspect="ignore"
 [gui]
 
 theme/custom="uid://qarnl7rs46s6"
+theme/custom_font="uid://jwqbwg622omb"
 
 [rendering]
 

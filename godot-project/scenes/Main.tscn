@@ -3,6 +3,9 @@
 [ext_resource type="Script" uid="uid://bti6evfv7dhfn" path="res://scripts/Main.gd" id="1"]
 [ext_resource type="Script" uid="uid://7hg4ffqwubx0" path="res://scenes/player_info_container.gd" id="2_rvslj"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_rvslj"]
+font_size = 26
+
 [node name="Main" type="Node2D" unique_id=1988683040]
 script = ExtResource("1")
 
@@ -138,3 +141,44 @@ autowrap_trim_flags = 0
 layout_mode = 2
 theme_type_variation = &"StatsLabel"
 autowrap_trim_flags = 0
+
+[node name="Title" type="ColorRect" parent="ScreenBounds" unique_id=616040994]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09803922, 0.09803922, 0.09803922, 0.7176471)
+
+[node name="Label" type="Label" parent="ScreenBounds/Title" unique_id=424366311]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -308.0
+offset_top = -168.5
+offset_right = 308.0
+offset_bottom = 168.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "                                    *******
+                                 *****   *****
+                              *****         *****
+                             ****   Welcome   ****
+                            ***       to       ***
+                             ***     Omega     ***
+                              ****           ****
+                                 ****    ****
+                              *    **    **    *
+                               *****      *****
+
+        Omega is copyright (C) 1987,1988,1989 by: Laurence R. Brothers
+         Modifications copyright (C) 2019, 2021-2023 by: Lyle Tafoya
+
+         This is free software, and you are welcome to redistribute it
+               under certain conditions; see license for details
+"
+label_settings = SubResource("LabelSettings_rvslj")

@@ -1,16 +1,25 @@
 #pragma once
 
-#include "game_session.h"
-#include "input_queue.hpp"
-
-#include <atomic>
+// clang-format off
+// Include order is load-bearing here: godot-cpp's generated headers declare
+// enum members (KEY_BACKSPACE, KEY_UP, ...) whose names are also curses
+// macros defined via defs.h -> curses_stub.h. All godot headers must be fully
+// parsed before defs.h, or the macros mangle godot's enum declarations.
+#include <godot_cpp/classes/global_constants.hpp>
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
 #include <godot_cpp/variant/packed_byte_array.hpp>
 #include <godot_cpp/variant/packed_int32_array.hpp>
 #include <godot_cpp/variant/vector2i.hpp>
+
+#include "defs.h"
+#include "game_session.h"
+#include "input_queue.hpp"
+
+#include <atomic>
 #include <thread>
+// clang-format on
 
 namespace godot
 {
@@ -26,6 +35,85 @@ public:
     PHASE_MENU      = 1, // title / character-creation menus
     PHASE_RUNNING   = 2, // main game loop active
     PHASE_GAME_OVER = 3, // run_game_loop returned normally
+  };
+
+  // Values returned by get_terrain_data() for dungeon/city/interior levels.
+  // Each is the full chtype from defs.h (ASCII glyph in bits 0-7, color pair
+  // in bits 24-31). Members carry a TERRAIN_ prefix because the bare names
+  // (WALL, FLOOR, ...) are preprocessor macros in defs.h.
+  enum LevelTerrain
+  {
+    TERRAIN_SPACE       = SPACE,
+    TERRAIN_WALL        = WALL,
+    TERRAIN_PORTCULLIS  = PORTCULLIS,
+    TERRAIN_OPEN_DOOR   = OPEN_DOOR,
+    TERRAIN_CLOSED_DOOR = CLOSED_DOOR,
+    TERRAIN_WHIRLWIND   = WHIRLWIND,
+    TERRAIN_ABYSS       = ABYSS,
+    TERRAIN_VOID        = VOID_CHAR, // alias of TERRAIN_SPACE — same chtype
+    TERRAIN_LAVA        = LAVA,
+    TERRAIN_HEDGE       = HEDGE,
+    TERRAIN_WATER       = WATER,
+    TERRAIN_FIRE        = FIRE,
+    TERRAIN_TRAP        = TRAP, // revealed traps only; hidden traps look like FLOOR
+    TERRAIN_LIFT        = LIFT,
+    TERRAIN_STAIRS_UP   = STAIRS_UP,
+    TERRAIN_STAIRS_DOWN = STAIRS_DOWN,
+    TERRAIN_FLOOR       = FLOOR,
+    TERRAIN_STATUE      = STATUE,
+    TERRAIN_RUBBLE      = RUBBLE,
+    TERRAIN_ALTAR       = ALTAR, // deity id in get_terrain_aux_data()
+    TERRAIN_CHAIR       = CHAIR,
+    TERRAIN_SAFE        = SAFE,
+    TERRAIN_FURNITURE   = FURNITURE,
+    TERRAIN_BED         = BED,
+  };
+
+  // Values returned by get_terrain_data() in the countryside (overworld).
+  enum CountryTerrain
+  {
+    COUNTRY_PLAINS     = PLAINS,
+    COUNTRY_TUNDRA     = TUNDRA,
+    COUNTRY_ROAD       = ROAD,
+    COUNTRY_MOUNTAINS  = MOUNTAINS,
+    COUNTRY_PASS       = PASS,
+    COUNTRY_RIVER      = RIVER,
+    COUNTRY_CITY       = CITY,
+    COUNTRY_VILLAGE    = VILLAGE,
+    COUNTRY_FOREST     = FOREST,
+    COUNTRY_JUNGLE     = JUNGLE,
+    COUNTRY_SWAMP      = SWAMP,
+    COUNTRY_VOLCANO    = VOLCANO,
+    COUNTRY_CASTLE     = CASTLE,
+    COUNTRY_TEMPLE     = TEMPLE,
+    COUNTRY_CAVES      = CAVES,
+    COUNTRY_DESERT     = DESERT,
+    COUNTRY_CHAOS_SEA  = CHAOS_SEA,
+    COUNTRY_STARPEAK   = STARPEAK,
+    COUNTRY_DRAGONLAIR = DRAGONLAIR,
+    COUNTRY_MAGIC_ISLE = MAGIC_ISLE,
+  };
+
+  // Item-class glyphs returned by get_item_data(). ITEM_PILE means more than
+  // one item on the cell. Individual items of a class share one glyph.
+  enum ItemGlyph
+  {
+    ITEM_CORPSE         = CORPSE,
+    ITEM_CASH           = CASH,
+    ITEM_PILE           = PILE,
+    ITEM_FOOD           = FOOD,
+    ITEM_WEAPON         = WEAPON,
+    ITEM_MISSILE_WEAPON = MISSILEWEAPON,
+    ITEM_SCROLL         = SCROLL,
+    ITEM_POTION         = POTION,
+    ITEM_ARMOR          = ARMOR,
+    ITEM_SHIELD         = SHIELD,
+    ITEM_CLOAK          = CLOAK,
+    ITEM_BOOTS          = BOOTS,
+    ITEM_STICK          = STICK,
+    ITEM_RING           = RING,
+    ITEM_THING          = THING,
+    ITEM_ARTIFACT       = ARTIFACT,
   };
 
   OmegaGame()  = default;
@@ -88,3 +176,7 @@ private:
 };
 
 } // namespace godot
+
+VARIANT_ENUM_CAST(godot::OmegaGame::LevelTerrain);
+VARIANT_ENUM_CAST(godot::OmegaGame::CountryTerrain);
+VARIANT_ENUM_CAST(godot::OmegaGame::ItemGlyph);

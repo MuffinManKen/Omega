@@ -3,6 +3,7 @@ extends Node2D
 
 @onready var omega_game: OmegaGame = $OmegaGame
 @onready var player_info_container: PlayerInfoContainer = $ScreenBounds/PlayerInfoContainer
+@onready var title: ColorRect = $ScreenBounds/Title
 
 const FONT_SIZE := 26
 
@@ -120,6 +121,14 @@ var tile_data: PackedInt32Array
 
 var current_phase := OmegaGame.PHASE_STARTING
 
+const TILE_GFX := {
+	OmegaGame.TERRAIN_FLOOR : preload("res://gfx/tiles/floor.png"),
+	OmegaGame.TERRAIN_WALL : preload("res://gfx/tiles/wall.png"),
+	OmegaGame.TERRAIN_WATER : preload("res://gfx/tiles/water.png"),
+	OmegaGame.TERRAIN_OPEN_DOOR : preload("res://gfx/tiles/open_door.png"),
+	OmegaGame.TERRAIN_CLOSED_DOOR : preload("res://gfx/tiles/closed_door.png"),
+}
+
 # Structured per-cell snapshot for PHASE_RUNNING — separate terrain/item/creature
 # layers so the renderer can eventually draw them independently with proper
 # depth sorting, visibility tinting, and tile-sprite substitution.
@@ -151,6 +160,15 @@ func _ready() -> void:
 	# _draw can run before the first dirty fetch (initial draw on tree entry,
 	# phase-change redraws); a zero-filled buffer renders as a blank screen.
 	tile_data.resize(omega_game.get_buffer_width() * omega_game.get_buffer_height())
+	var snap_count := omega_game.get_snapshot_width() * omega_game.get_snapshot_height()
+	snap_terrain.resize(snap_count)
+	snap_terrain_aux.resize(snap_count)
+	snap_creatures.resize(snap_count)
+	snap_items.resize(snap_count)
+	snap_flags.resize(snap_count)
+
+	title.visible = true
+	title.gui_input.connect(handle_title_input)
 
 
 func _process(_delta):
@@ -195,6 +213,8 @@ func _process(_delta):
 				player_info_container.update_time(t)
 				player_info_container.update_ui()
 				tile_data = omega_game.get_tile_data()
+				snap_terrain = omega_game.get_terrain_data()
+				snap_terrain_aux = omega_game.get_terrain_aux_data()
 				queue_redraw()
 
 
@@ -208,12 +228,24 @@ func _draw() -> void:
 
 func draw_game_world() -> void:
 	var tile_data_width := omega_game.get_buffer_width()
-	var w := mini(MAP_WIDTH_IN_TILES, omega_game.get_snapshot_width())
+	var snap_stride := omega_game.get_snapshot_width()
+	var w := mini(MAP_WIDTH_IN_TILES, snap_stride)
 	var h := mini(MAP_HEIGHT_IN_TILES, omega_game.get_snapshot_height())
+
+	#var pos := omega_game.get_player_pos()
+	#printt("Player at ", pos, snap_terrain[pos.y * snap_stride + pos.x])
 
 	for y in h:
 		for x in w:
-			draw_tile(tile_data[y * tile_data_width + x], x, y)
+			var data_idx := y * tile_data_width + x
+			var snap_idx := y * snap_stride + x
+			if snap_terrain[snap_idx] == omega_game.TERRAIN_OPEN_DOOR:
+				print("OpenDoor:", snap_terrain_aux[snap_idx])
+			if TILE_GFX.has(snap_terrain[snap_idx]):
+				draw_gfx_tile(TILE_GFX[snap_terrain[snap_idx]], x, y)
+			#else:
+			if snap_terrain[snap_idx] not in [omega_game.TERRAIN_WALL, omega_game.TERRAIN_WATER]:
+				draw_tile(tile_data[data_idx], x, y, TILE_SIZE)
 
 
 # Render the full 120×64 TileBuffer.  Used for PHASE_MENU and as the current
@@ -226,10 +258,10 @@ func draw_tile_data() -> void:
 
 	for y in h:
 		for x in w:
-			draw_tile(tile_data[y * w + x], x, y)
+			draw_tile(tile_data[y * w + x], x, y, font_size)
 
 
-func draw_tile(raw_tile: int, x: int, y: int) -> void:
+func draw_tile(raw_tile: int, x: int, y: int, p_tile_size : Vector2) -> void:
 	var is_bold      := raw_tile & A_BOLD
 	var is_reverse   := raw_tile & A_REVERSE
 	var is_underline := raw_tile & A_UNDERLINE
@@ -260,13 +292,14 @@ func draw_tile(raw_tile: int, x: int, y: int) -> void:
 		fg_color = bg_color
 		bg_color = tmp
 
-	var location := Vector2(x * font_size.x, y * font_size.y)
+
+	var location := Vector2(x * p_tile_size.x, y * p_tile_size.y)
 	var char_location := location + Vector2(0, font_ascent)
 
 	# Draw background (skip true-black to avoid unnecessary calls; the viewport
 	# clear color is already black).
 	if bg_color != CURSES_COLORS[0]:
-		draw_rect(Rect2(location, font_size), bg_color)
+		draw_rect(Rect2(location, p_tile_size), bg_color)
 
 	# Draw glyph for printable non-space characters.
 	# Space and control chars are invisible — only the background rect matters.
@@ -274,11 +307,18 @@ func draw_tile(raw_tile: int, x: int, y: int) -> void:
 		draw_char(font, char_location, glyph, FONT_SIZE, fg_color)
 
 
-func _input(p_event: InputEvent) -> void:
+func draw_gfx_tile(p_tile_texture : Texture2D, p_x : int, p_y : int) -> void:
+	var location := Vector2(p_x * TILE_SIZE.x, p_y * TILE_SIZE.y)
+	draw_texture_rect(p_tile_texture, Rect2(location, TILE_SIZE), false)
+
+
+func _unhandled_input(p_event: InputEvent) -> void:
 	var key_event := p_event as InputEventKey
 	if not key_event:
 		return
 	if not key_event.pressed or key_event.echo:
+		return
+	if title.visible:
 		return
 
 	var unicode := key_event.unicode
@@ -293,7 +333,10 @@ func _input(p_event: InputEvent) -> void:
 		omega_game.provide_input(key_event.keycode)
 
 
-
+#TODO: This should be moved into a proper title component
+func handle_title_input(p_input : InputEvent) -> void:
+	if p_input is InputEventMouseButton or p_input is InputEventKey:
+		title.visible = false
 
 
 class Player extends RefCounted:
