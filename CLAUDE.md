@@ -2,6 +2,22 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Working Agreements
+
+- **`godot-project/` (GDScript, scenes, assets) is Ken's domain.** Never edit files there unless
+  explicitly asked. Diagnose problems and provide snippets for Ken to apply himself.
+- **`src/` C++ and the CMake files are fair game** once a fix or feature has been agreed in
+  conversation.
+- **No AI attribution, anywhere.** No `Co-Authored-By` trailers on commits, no "Generated with"
+  footers on PRs or issues.
+- **Upstream-facing actions need explicit approval each time**: creating or commenting on PRs and
+  issues, and anything else visible to the upstream maintainer. Local reversible work, and commits
+  and pushes of already-agreed work to Ken's own fork, do not.
+- **Keep upstream-shared files minimally diffed.** This repo is a fork of
+  https://github.com/Lyle-Tafoya/Omega (PRs target its `development` branch). In files that exist
+  upstream, match the surrounding style by hand and do not run clang-format over the whole file —
+  reformat churn makes upstream PRs unreviewable. Fork-only files follow `.clang-format` fully.
+
 ## Project Overview
 
 Omega is a modern C++ fork of the 1987 roguelike "Omega", featuring bug fixes, balance improvements, and UI enhancements. The active goal is a **Godot 4 port** replacing the curses terminal renderer with graphical 64×64 tiles.
