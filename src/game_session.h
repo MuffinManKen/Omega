@@ -16,7 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#ifndef OMEGA_GAME_SESSION_H_
+#define OMEGA_GAME_SESSION_H_
 
 // Outcome of init_game_session(): Failed if data files are missing or
 // initialization otherwise fails; NewGame for a fresh character;
@@ -36,3 +37,5 @@ InitResult init_game_session();
 // Pass reset_clock = true for a new game (resets Tick/Player.click on the
 // first turn). In the GDExtension build this is called on a background thread.
 void run_game_loop(bool reset_clock);
+
+#endif
